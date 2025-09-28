@@ -17,11 +17,35 @@ A professional Symfony-based REST API application built with modern development 
 
 ### Prerequisites
 
-- PHP 8.4+
+**Option 1 - Docker (Recommended):**
+- Docker & Docker Compose
+
+**Option 2 - Local Development:**
+- PHP 8.2+
 - Composer
 - Database (SQLite, MySQL, PostgreSQL)
 
 ### Installation
+
+#### 🐳 Docker Setup (Recommended)
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd koro
+   ```
+
+2. **Start with Docker Compose:**
+   ```bash
+   docker compose up --build
+   ```
+
+3. **Access the application:**
+   - API Interface: http://localhost:8080/api
+   - OpenAPI Docs: http://localhost:8080/api/docs.json
+   - Database: PostgreSQL on localhost:5432
+
+#### 🔧 Local Development Setup
 
 1. **Clone and install dependencies:**
    ```bash
@@ -34,6 +58,8 @@ A professional Symfony-based REST API application built with modern development 
    ```bash
    cp .env .env.local
    # Edit .env.local with your database configuration
+   # Add APP_SECRET to .env.local - generate one with:
+   # php -r "echo 'APP_SECRET=' . bin2hex(random_bytes(20)) . PHP_EOL;"
    ```
 
 3. **Setup database:**
@@ -54,6 +80,9 @@ A professional Symfony-based REST API application built with modern development 
 
 ```
 ├── config/             # Symfony configuration files
+├── docker/             # Docker configuration files
+│   ├── nginx/          # nginx web server config
+│   └── supervisor/     # Process management config
 ├── public/             # Web server document root
 ├── src/
 │   ├── ApiResource/    # API Platform resources
@@ -64,10 +93,32 @@ A professional Symfony-based REST API application built with modern development 
 │   ├── Functional/     # Integration tests
 │   └── Unit/          # Unit tests
 ├── var/               # Cache and logs
-└── vendor/            # Composer dependencies
+├── vendor/            # Composer dependencies
+├── compose.yaml       # Docker Compose configuration
+├── Dockerfile         # Docker container definition
+└── .dockerignore      # Docker build exclusions
 ```
 
 ## 🛠️ Development Workflow
+
+### Docker Commands
+
+```bash
+# Start application stack
+docker compose up --build    # Build and start (with logs)
+docker compose up -d --build # Build and start (background)
+
+# Manage services
+docker compose down          # Stop all services
+docker compose restart app  # Restart app service
+docker compose logs app     # View app logs
+docker compose logs -f      # Follow all logs
+
+# Execute commands in container
+docker compose exec app php bin/console cache:clear
+docker compose exec app composer install
+docker compose exec database psql -U app app  # Connect to database
+```
 
 ### Quality Assurance Commands
 
@@ -81,12 +132,12 @@ make phpstan            # Run PHPStan static analysis
 make cs-check           # Check coding standards
 make cs-fix             # Fix coding standards
 
-# Database operations
+# Database operations (local development)
 make db-create          # Create database
 make db-migrate         # Run migrations
 make db-reset           # Reset database
 
-# Development server
+# Development server (local development)
 make serve              # Start server (foreground)
 make serve-bg           # Start server (background)
 ```
@@ -142,9 +193,9 @@ The sample Book API provides full CRUD operations:
 
 ### Example Usage
 
-**Create a Book:**
+**Create a Book (Docker):**
 ```bash
-curl -X POST http://localhost:8000/api/books \
+curl -X POST http://localhost:8080/api/books \
   -H "Content-Type: application/ld+json" \
   -d '{
     "title": "Clean Code",
@@ -154,12 +205,33 @@ curl -X POST http://localhost:8000/api/books \
   }'
 ```
 
-**Get All Books:**
+**Get All Books (Docker):**
 ```bash
+curl http://localhost:8080/api/books
+```
+
+**For Local Development:**
+```bash
+# Use port 8000 instead
 curl http://localhost:8000/api/books
 ```
 
 ## 🏗️ Architecture
+
+### Docker Stack
+
+The application runs on a modern Docker stack:
+
+- **Web Server**: nginx (latest)
+- **PHP Runtime**: PHP 8.3-FPM with extensions:
+  - `pdo_pgsql` - PostgreSQL database support
+  - `intl` - Internationalization support  
+  - `gd` - Image processing
+  - `zip` - Archive handling
+  - `bcmath` - Precision mathematics
+- **Database**: PostgreSQL 16 (Alpine)
+- **Process Management**: Supervisor (manages nginx + PHP-FPM)
+- **Networking**: Isolated Docker network for service communication
 
 ### API Platform Integration
 
@@ -250,6 +322,13 @@ make full-check       # Complete project validation
 
 ### Common Issues
 
+**Docker Issues:**
+1. **Port Already in Use**: Change ports in `compose.yaml` if 8080/5432 are occupied
+2. **Build Failures**: Run `docker compose down` then `docker compose up --build`  
+3. **Database Connection**: Ensure database service is healthy: `docker compose logs database`
+4. **Permission Issues**: Reset containers: `docker compose down -v && docker compose up --build`
+
+**Local Development Issues:**
 1. **Database Connection**: Check `DATABASE_URL` in `.env.local`
 2. **Cache Issues**: Run `make cache-clear`
 3. **Permission Issues**: Ensure `var/` directory is writable
@@ -257,7 +336,8 @@ make full-check       # Complete project validation
 
 ### Debug Mode
 
-Set `APP_ENV=dev` in `.env.local` for detailed error messages.
+**Docker**: Set `APP_ENV=dev` in `compose.yaml` environment section
+**Local**: Set `APP_ENV=dev` in `.env.local` for detailed error messages
 
 ## 📄 License
 

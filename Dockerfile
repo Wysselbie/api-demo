@@ -49,6 +49,9 @@ COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Copy application code
 COPY . /var/www/html
 
+# Create /var/www/html/var directory
+RUN mkdir -p /var/www/html/var
+
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/var

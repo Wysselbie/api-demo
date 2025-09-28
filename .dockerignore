@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+compose*.yml
+compose*.yaml
+
+# Documentation
+README.md
+
+# Development files
+.env.dev
+.env.test
+.editorconfig
+.php-cs-fixer.dist.php
+phpstan.neon
+phpunit.dist.xml
+Makefile
+
+# Cache and logs
+var/cache/*
+var/log/*
+var/sessions/*
+!var/cache/.gitkeep
+!var/log/.gitkeep
+!var/sessions/.gitkeep
+
+# Dependencies (will be installed in container)
+vendor/
+node_modules/
+
+# Tests
+tests/
+phpunit.xml
+.phpunit.cache/
+
+# IDE
+.vscode/
+.idea/

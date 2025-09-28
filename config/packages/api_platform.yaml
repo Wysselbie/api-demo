@@ -1,0 +1,7 @@
+api_platform:
+    title: ERP Demo
+    version: 0.0.1
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']

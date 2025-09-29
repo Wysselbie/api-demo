@@ -14,8 +14,10 @@ COPY . /var/www/html
 # Create /var/www/html/var directory
 RUN mkdir -p /var/www/html/var
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html \
+# Create nginx temporary directories and set proper permissions
+RUN mkdir -p /var/lib/nginx/body /var/lib/nginx/fastcgi /var/lib/nginx/proxy /var/lib/nginx/scgi /var/lib/nginx/uwsgi \
+    && chown -R www-data:www-data /var/lib/nginx \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/var
 
 USER www-data
@@ -23,8 +25,8 @@ USER www-data
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Create necessary directories
-RUN mkdir -p /var/log/nginx /var/log/supervisor
+# Create necessary directories (logs now go to stdout/stderr)
+RUN mkdir -p /var/run
 
 # Expose port 80
 EXPOSE 80

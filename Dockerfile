@@ -56,6 +56,8 @@ RUN mkdir -p /var/www/html/var
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/var
 
+USER www-data
+
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 

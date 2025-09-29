@@ -25,11 +25,10 @@ USER www-data
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Create necessary directories (logs now go to stdout/stderr)
-RUN mkdir -p /var/run
-
 # Expose port 80
 EXPOSE 80
 
+ENV FPM_LISTEN=/tmp/php-fpm.sock
+
 # Start supervisor (which will manage nginx and php-fpm)
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

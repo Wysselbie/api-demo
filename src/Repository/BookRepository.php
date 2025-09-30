@@ -27,7 +27,7 @@ class BookRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.author LIKE :author')
-            ->setParameter('author', '%' . $author . '%')
+            ->setParameter('author', '%'.$author.'%')
             ->orderBy('b.title', 'ASC')
             ->getQuery()
             ->getResult();
@@ -40,7 +40,7 @@ class BookRepository extends ServiceEntityRepository
      */
     public function findRecentBooks(int $days = 30): array
     {
-        $date = new \DateTimeImmutable('-' . $days . ' days');
+        $date = new \DateTimeImmutable('-'.$days.' days');
 
         return $this->createQueryBuilder('b')
             ->andWhere('b.createdAt >= :date')
@@ -59,7 +59,7 @@ class BookRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.title LIKE :query OR b.author LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('query', '%'.$query.'%')
             ->orderBy('b.title', 'ASC')
             ->getQuery()
             ->getResult();

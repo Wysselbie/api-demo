@@ -12,7 +12,7 @@ parameters:
     symfony:
         # Container XML path - will be generated during cache warmup
         # Falls back gracefully if not found (e.g., during CI)
-        containerXmlPath: '%currentWorkingDirectory%/var/cache/test/App_KernelTestDebugContainer.xml'
+        containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
         consoleApplicationLoader: '%currentWorkingDirectory%/tests/console-application.php'
     
     # Doctrine-specific configuration. This will enable DQL validation.

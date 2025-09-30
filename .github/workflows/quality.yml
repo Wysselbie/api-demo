@@ -1,5 +1,8 @@
 name: Quality Checks
 
+env:
+  APP_ENV: dev
+
 on:
   push:
     branches: [ main ]

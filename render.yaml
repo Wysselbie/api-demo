@@ -1,33 +1,29 @@
 # Exported from Render on 2025-09-30T08:12:45Z
 version: "1"
-projects:
-- name: API Demo
-  environments:
-  - name: Production
-    services:
-    - type: web
-      name: api-demo
-      runtime: image
-      image:
-        url: ghcr.io/wysselbie/api-demo:latest
-      plan: free
-      envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: api-demo-postgres
-          property: connectionString
-      region: frankfurt
-      healthCheckPath: /api/health
-      autoDeployTrigger: checksPass
-      previews:
-        generation: manual
-    databases:
-    - name: api-demo-postgres
-      databaseName: api_demo_87ay
-      user: api_demo
-      plan: free
-      region: frankfurt
-      ipAllowList:
-      - source: 0.0.0.0/0
-        description: everywhere
-      postgresMajorVersion: "17"
+services:
+- type: web
+  name: api-demo
+  runtime: image
+  image:
+    url: ghcr.io/wysselbie/api-demo:latest
+  plan: free
+  envVars:
+  - key: DATABASE_URL
+    fromDatabase:
+      name: api-demo-postgres
+      property: connectionString
+  region: frankfurt
+  healthCheckPath: /api/health
+  autoDeployTrigger: checksPass
+  previews:
+    generation: manual
+databases:
+- name: api-demo-postgres
+  databaseName: api_demo_87ay
+  user: api_demo
+  plan: free
+  region: frankfurt
+  ipAllowList:
+  - source: 0.0.0.0/0
+    description: everywhere
+  postgresMajorVersion: "17"

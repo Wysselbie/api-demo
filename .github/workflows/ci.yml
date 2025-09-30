@@ -84,10 +84,28 @@ jobs:
     - name: Run Security Check
       run: make security-check
 
-    - name: Validate Doctrine Schema
+    - name: Check for Schema Drift
+      id: schema-check
       env:
         DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
-      run: make validate-schema
+      run: |
+        OUTPUT=$(php bin/console doctrine:migrations:diff --no-interaction --quiet 2>&1 || true)
+        echo "output<<EOF" >> $GITHUB_OUTPUT
+        echo "$OUTPUT" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        if [[ -n "$OUTPUT" ]]; then
+          echo "has_drift=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_drift=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Fail if Schema Drift Detected
+      if: steps.schema-check.outputs.has_drift == 'true'
+      run: |
+        echo "::error::Schema drift detected! Your entity definitions don't match the database schema."
+        echo "::error::Run 'php bin/console doctrine:migrations:diff' locally to generate a migration."
+        echo "${{ steps.schema-check.outputs.output }}"
+        exit 1
 
   security:
     name: Security Scan

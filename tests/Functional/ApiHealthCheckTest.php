@@ -30,7 +30,11 @@ class ApiHealthCheckTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
-        $responseData = json_decode($client->getResponse()->getContent(), true);
+        $responseContent = $client->getResponse()->getContent();
+
+        $this->assertNotFalse($responseContent);
+
+        $responseData = json_decode($responseContent, true);
 
         $this->assertArrayHasKey('@context', $responseData);
         $this->assertArrayHasKey('@id', $responseData);

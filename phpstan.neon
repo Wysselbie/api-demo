@@ -4,6 +4,10 @@ parameters:
         - src
         - tests
     
+    # Exclude paths from analysis
+    excludePaths:
+        - tests/bootstrap.php
+
     # Symfony-specific configuration
     symfony:
         # Container XML path - will be generated during cache warmup
@@ -11,6 +15,10 @@ parameters:
         containerXmlPath: '%currentWorkingDirectory%/var/cache/test/App_KernelTestDebugContainer.xml'
         consoleApplicationLoader: '%currentWorkingDirectory%/tests/console-application.php'
     
+    # Doctrine-specific configuration. This will enable DQL validation.
+    doctrine:
+        objectManagerLoader: '%currentWorkingDirectory%/tests/object-manager.php'
+
     # Ignore patterns
     ignoreErrors:
         # Ignore specific Doctrine-related issues that are common in Symfony
@@ -30,3 +38,4 @@ parameters:
     
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon

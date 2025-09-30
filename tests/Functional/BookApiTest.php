@@ -42,7 +42,10 @@ class BookApiTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
-        $responseData = json_decode($client->getResponse()->getContent(), true);
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertNotFalse($responseContent);
+
+        $responseData = json_decode($responseContent, true);
 
         $this->assertArrayHasKey('member', $responseData);
         $this->assertCount(1, $responseData['member']);
@@ -64,12 +67,15 @@ class BookApiTest extends WebTestCase
             'isbn' => '978-0-306-40615-7',
         ];
 
-        $client->request('POST', '/api/books', [], [], [], json_encode($bookData));
+        $client->request('POST', '/api/books', [], [], [], json_encode($bookData) ?: null);
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
-        $responseData = json_decode($client->getResponse()->getContent(), true);
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertNotFalse($responseContent);
+
+        $responseData = json_decode($responseContent, true);
         $this->assertSame($bookData['title'], $responseData['title']);
         $this->assertSame($bookData['author'], $responseData['author']);
         $this->assertArrayHasKey('id', $responseData);
@@ -95,7 +101,10 @@ class BookApiTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
-        $responseData = json_decode($client->getResponse()->getContent(), true);
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertNotFalse($responseContent);
+
+        $responseData = json_decode($responseContent, true);
         $this->assertSame('Single Book', $responseData['title']);
         $this->assertSame('Single Author', $responseData['author']);
     }
@@ -120,11 +129,14 @@ class BookApiTest extends WebTestCase
             'author' => 'Updated Author',
         ];
 
-        $client->request('PUT', '/api/books/'.$book->getId(), [], [], [], json_encode($updateData));
+        $client->request('PUT', '/api/books/'.$book->getId(), [], [], [], json_encode($updateData) ?: null);
 
         $this->assertResponseIsSuccessful();
 
-        $responseData = json_decode($client->getResponse()->getContent(), true);
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertNotFalse($responseContent);
+
+        $responseData = json_decode($responseContent, true);
         $this->assertSame('Updated Title', $responseData['title']);
         $this->assertSame('Updated Author', $responseData['author']);
     }
@@ -166,7 +178,7 @@ class BookApiTest extends WebTestCase
             'author' => '', // Empty author should fail validation
         ];
 
-        $client->request('POST', '/api/books', [], [], [], json_encode($invalidBookData));
+        $client->request('POST', '/api/books', [], [], [], json_encode($invalidBookData) ?: null);
 
         $this->assertResponseStatusCodeSame(422); // Unprocessable Entity
     }

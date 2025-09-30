@@ -8,7 +8,6 @@ projects:
     - type: web
       name: api-demo
       runtime: image
-      repo: https://github.com/Wysselbie/api-demo
       image:
         url: ghcr.io/wysselbie/api-demo:latest
       plan: free

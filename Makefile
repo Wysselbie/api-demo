@@ -27,11 +27,11 @@ test-coverage: ## Run PHPUnit tests with coverage
 
 phpstan: ## Run PHPStan static analysis
 	@echo "$(BLUE)Running PHPStan static analysis...$(NC)"
-	vendor/bin/phpstan analyse
+	vendor/bin/phpstan analyse --memory-limit 1G
 
 phpstan-baseline: ## Generate PHPStan baseline
 	@echo "$(BLUE)Generating PHPStan baseline...$(NC)"
-	vendor/bin/phpstan analyse --generate-baseline
+	vendor/bin/phpstan analyse --generate-baseline --memory-limit 1G
 
 cs-check: ## Check coding standards with PHP CS Fixer
 	@echo "$(BLUE)Checking coding standards...$(NC)"

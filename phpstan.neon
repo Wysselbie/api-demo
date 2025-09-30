@@ -19,9 +19,6 @@ parameters:
     bootstrapFiles:
         - '%currentWorkingDirectory%/tests/bootstrap.php'
     
-    # Memory limit
-    memoryLimit: '1G'
-    
     # Cache directory
     tmpDir: 'var/cache/phpstan'
     

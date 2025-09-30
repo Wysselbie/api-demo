@@ -25,6 +25,10 @@ test-coverage: ## Run PHPUnit tests with coverage
 	@echo "$(BLUE)Running PHPUnit tests with coverage...$(NC)"
 	php bin/phpunit --coverage-html var/coverage
 
+coverage-report: ## Open coverage report in browser
+	@echo "$(BLUE)Opening coverage report...$(NC)"
+	open var/coverage/index.html
+
 phpstan: ## Run PHPStan static analysis
 	@echo "$(BLUE)Running PHPStan static analysis...$(NC)"
 	vendor/bin/phpstan analyse --memory-limit 1G

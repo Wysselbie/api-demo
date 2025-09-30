@@ -56,7 +56,7 @@ jobs:
     - name: Setup test database
       env:
         DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
-      run: make db-setup
+      run: make db-test-setup
 
     - name: Warm up cache for analysis
       env:

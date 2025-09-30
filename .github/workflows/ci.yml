@@ -73,6 +73,13 @@ jobs:
     - name: Run PHP CS Fixer (Code Style Check)
       run: make cs-check
 
+    - name: Create test database
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: |
+        php bin/console doctrine:database:create --if-not-exists
+        php bin/console doctrine:migrations:migrate --no-interaction
+
     - name: Run PHPUnit Tests
       env:
         DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8

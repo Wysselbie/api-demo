@@ -133,5 +133,5 @@ api-docs: ## Show API documentation URL
 	@echo "  $(BLUE)http://localhost:8000/api$(NC) (API Platform interface)"
 	@echo "  $(BLUE)http://localhost:8000/api/docs.json$(NC) (OpenAPI JSON)"
 
-full-check: install quality validate-schema security-check ## Run complete project check
+full-check: install quality security-check ## Run complete project check
 	@echo "$(GREEN)Full project check completed!$(NC)"

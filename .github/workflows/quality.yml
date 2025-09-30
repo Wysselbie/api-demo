@@ -16,7 +16,7 @@ jobs:
         image: postgres:16
         env:
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: api_demo_test
+          POSTGRES_DB: api_demo
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -52,22 +52,22 @@ jobs:
 
     - name: Setup test database
       env:
-        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
-      run: make db-test-setup
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+      run: make db-setup
 
     - name: Warm up cache for analysis
       env:
-        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
-      run: php bin/console cache:warmup --env=test
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+      run: php bin/console cache:warmup
 
     - name: Run full project check
       env:
-        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
       run: make full-check
 
     - name: Generate test coverage report
       env:
-        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
       run: make test-coverage
 
     - name: Upload coverage reports to Codecov

@@ -49,4 +49,11 @@
 
     </extensions>
 
+    <coverage>
+        <report>
+            <clover outputFile="var/coverage/clover.xml"/>
+            <html outputDirectory="var/coverage"/>
+        </report>
+    </coverage>
+
 </phpunit>

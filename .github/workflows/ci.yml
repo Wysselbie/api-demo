@@ -1,0 +1,96 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test & Quality Checks
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: api_demo_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.3
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, pgsql
+        coverage: xdebug
+
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: make install
+
+    - name: Create database
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: |
+        php bin/console doctrine:database:create --env=test --if-not-exists
+        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+    - name: Run PHPStan (Static Analysis)
+      run: make phpstan
+
+    - name: Run PHP CS Fixer (Code Style Check)
+      run: make cs-check
+
+    - name: Run PHPUnit Tests
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: make test
+
+    - name: Run Security Check
+      run: make security-check
+
+    - name: Validate Doctrine Schema
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: make validate-schema
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.3
+
+    - name: Install dependencies
+      run: composer install --no-dev --optimize-autoloader
+
+    - name: Run security audit
+      run: composer audit

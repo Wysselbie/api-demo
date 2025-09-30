@@ -17,7 +17,7 @@ parameters:
     
     # Bootstrap file
     bootstrapFiles:
-        - '%currentWorkingDirectory%/config/bootstrap.php'
+        - '%currentWorkingDirectory%/tests/bootstrap.php'
     
     # Memory limit
     memoryLimitFile: '.phpstan-memory-limit'

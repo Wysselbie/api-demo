@@ -1,0 +1,73 @@
+name: Quality Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  comprehensive-analysis:
+    name: Comprehensive Quality Analysis
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: api_demo_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.3
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, pgsql
+        coverage: xdebug
+
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: make install
+
+    - name: Setup test database
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: make db-test-setup
+
+    - name: Run full project check
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: make full-check
+
+    - name: Generate test coverage report
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: make test-coverage
+
+    - name: Upload coverage reports to Codecov
+      if: success()
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./var/coverage/clover.xml
+        fail_ci_if_error: false

@@ -6,8 +6,8 @@ parameters:
     
     # Symfony-specific configuration
     symfony:
-        container_xml_path: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
-        console_application_loader: '%currentWorkingDirectory%/tests/console-application.php'
+        containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
+        consoleApplicationLoader: '%currentWorkingDirectory%/tests/console-application.php'
     
     # Ignore patterns
     ignoreErrors:
@@ -20,14 +20,13 @@ parameters:
         - '%currentWorkingDirectory%/tests/bootstrap.php'
     
     # Memory limit
-    memoryLimitFile: '.phpstan-memory-limit'
+    memoryLimit: '1G'
     
     # Cache directory
     tmpDir: 'var/cache/phpstan'
     
-    # Additional rules
-    checkMissingIterableValueType: true
-    checkGenericClassInNonGenericObjectType: true
+    # Additional rules (these are now enabled by default in PHPStan 1.x)
+    # checkMissingIterableValueType and checkGenericClassInNonGenericObjectType are deprecated
     reportUnmatchedIgnoredErrors: false
     
 includes:

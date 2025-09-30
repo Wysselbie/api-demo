@@ -55,6 +55,11 @@ jobs:
         DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
       run: make db-test-setup
 
+    - name: Warm up cache for analysis
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8
+      run: php bin/console cache:warmup --env=test
+
     - name: Run full project check
       env:
         DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo_test?serverVersion=16&charset=utf8

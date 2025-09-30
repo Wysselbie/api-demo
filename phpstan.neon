@@ -6,7 +6,9 @@ parameters:
     
     # Symfony-specific configuration
     symfony:
-        containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
+        # Container XML path - will be generated during cache warmup
+        # Falls back gracefully if not found (e.g., during CI)
+        containerXmlPath: '%currentWorkingDirectory%/var/cache/test/App_KernelTestDebugContainer.xml'
         consoleApplicationLoader: '%currentWorkingDirectory%/tests/console-application.php'
     
     # Ignore patterns

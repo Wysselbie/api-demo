@@ -7,8 +7,10 @@ projects:
     services:
     - type: web
       name: api-demo
-      runtime: docker
+      runtime: image
       repo: https://github.com/Wysselbie/api-demo
+      image:
+        url: ghcr.io/wysselbie/api-demo:latest
       plan: free
       envVars:
       - key: DATABASE_URL
@@ -17,8 +19,6 @@ projects:
           property: connectionString
       region: frankfurt
       healthCheckPath: /api/health
-      dockerContext: .
-      dockerfilePath: ./Dockerfile
       autoDeployTrigger: checksPass
       previews:
         generation: manual

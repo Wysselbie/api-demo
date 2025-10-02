@@ -5,7 +5,7 @@ services:
   name: api-demo
   runtime: image
   image:
-    url: ghcr.io/wysselbie/api-demo:latest
+    url: ghcr.io/wysselbie/api-demo:b86647b6
   plan: free
   envVars:
   - key: DATABASE_URL

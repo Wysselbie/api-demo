@@ -25,10 +25,10 @@ class ApiHealthCheckTest extends WebTestCase
         $client = static::createClient();
 
         // Test API documentation endpoint
-        $client->request('GET', '/api/docs');
+        $client->request('GET', '/api/docs.json');
 
         $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
         $responseContent = $client->getResponse()->getContent();
 
@@ -36,11 +36,12 @@ class ApiHealthCheckTest extends WebTestCase
 
         $responseData = json_decode($responseContent, true);
 
-        $this->assertArrayHasKey('@context', $responseData);
-        $this->assertArrayHasKey('@id', $responseData);
-        $this->assertArrayHasKey('@type', $responseData);
-        $this->assertArrayHasKey('title', $responseData);
-        $this->assertArrayHasKey('entrypoint', $responseData);
-        $this->assertArrayHasKey('supportedClass', $responseData);
+        $this->assertArrayHasKey('openapi', $responseData);
+        $this->assertArrayHasKey('info', $responseData);
+        $this->assertArrayHasKey('paths', $responseData);
+
+        $this->assertArrayHasKey('title', $responseData['info']);
+        $this->assertArrayHasKey('version', $responseData['info']);
+        $this->assertArrayHasKey('description', $responseData['info']);
     }
 }

@@ -24,7 +24,7 @@ class BookApiTest extends WebTestCase
     public function testGetBooksCollection(): void
     {
         $client = static::createClient([], [
-            'CONTENT_TYPE' => 'application/ld+json',
+            'CONTENT_TYPE' => 'application/json',
         ]);
 
         // Create a test book
@@ -40,23 +40,22 @@ class BookApiTest extends WebTestCase
         $client->request('GET', '/api/books');
 
         $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
         $responseContent = $client->getResponse()->getContent();
         $this->assertNotFalse($responseContent);
 
         $responseData = json_decode($responseContent, true);
 
-        $this->assertArrayHasKey('member', $responseData);
-        $this->assertCount(1, $responseData['member']);
-        $this->assertSame('Test Book', $responseData['member'][0]['title']);
+        $this->assertCount(1, $responseData);
+        $this->assertSame('Test Book', $responseData[0]['title']);
     }
 
     public function testCreateBook(): void
     {
         $client = static::createClient([],
             [
-                'CONTENT_TYPE' => 'application/ld+json',
+                'CONTENT_TYPE' => 'application/json',
             ]
         );
 
@@ -70,7 +69,7 @@ class BookApiTest extends WebTestCase
         $client->request('POST', '/api/books', [], [], [], json_encode($bookData) ?: null);
 
         $this->assertResponseStatusCodeSame(201);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
         $responseContent = $client->getResponse()->getContent();
         $this->assertNotFalse($responseContent);
@@ -99,7 +98,7 @@ class BookApiTest extends WebTestCase
         $client->request('GET', '/api/books/'.$identifier['id']);
 
         $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
         $responseContent = $client->getResponse()->getContent();
         $this->assertNotFalse($responseContent);
@@ -112,7 +111,7 @@ class BookApiTest extends WebTestCase
     public function testUpdateBook(): void
     {
         $client = static::createClient([], [
-            'CONTENT_TYPE' => 'application/ld+json',
+            'CONTENT_TYPE' => 'application/json',
         ]);
 
         // Create a test book
@@ -144,7 +143,7 @@ class BookApiTest extends WebTestCase
     public function testDeleteBook(): void
     {
         $client = static::createClient([], [
-            'CONTENT_TYPE' => 'application/ld+json',
+            'CONTENT_TYPE' => 'application/json',
         ]);
 
         // Create a test book
@@ -170,7 +169,7 @@ class BookApiTest extends WebTestCase
     public function testCreateBookValidation(): void
     {
         $client = static::createClient([], [
-            'CONTENT_TYPE' => 'application/ld+json',
+            'CONTENT_TYPE' => 'application/json',
         ]);
 
         $invalidBookData = [

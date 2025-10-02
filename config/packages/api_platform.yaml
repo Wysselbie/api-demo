@@ -1,7 +1,13 @@
 api_platform:
-    title: ERP Demo
+    title: API Demo
+    formats:
+        json: ['application/json']
+    docs_formats:
+        json: ['application/json']
+        html: ['text/html']
     version: 0.0.1
     defaults:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+    show_webby: false

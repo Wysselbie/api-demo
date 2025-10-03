@@ -1,28 +1,43 @@
 # GitHub Actions CI/CD Setup
 
-This project uses GitHub Actions for continuous integration and deployment. The setup includes three main workflows:
+This project uses GitHub Actions for continuous integration and deployment.
 
 ## 🚀 Workflows
 
 ### 1. **CI/CD Pipeline** (`.github/workflows/ci.yml`)
-Runs on every push and pull request to `main` and `develop` branches.
+Runs on every push and pull request to `main` branch.
 
-**Includes:**
+**Testing & Quality Checks:**
 - ✅ **PHPUnit Tests** - Full test suite execution
 - 🔍 **PHPStan Analysis** - Static analysis at level 8
 - 🎨 **PHP CS Fixer** - Code style checking
 - 🔒 **Security Audit** - Composer security check
-- 🗄️ **Schema Validation** - Doctrine schema validation
-- 🐘 **PostgreSQL Setup** - Test database configuration
+- 🗄️ **Schema Drift Detection** - Automatically detects missing migrations
+- 🐘 **PostgreSQL 16 Setup** - Test database configuration
+
+**Docker Build & Deploy** (only on `main` branch pushes):
+- 🐳 **Builds Docker image** after all tests pass
+- 🏷️ **Tags with git commit short SHA** (7 chars) - e.g., `b86647b`
+- 📦 **Pushes to GitHub Container Registry** - `ghcr.io/wysselbie/api-demo`
+- 🚀 **Creates `latest` tag** for main branch
+- 💾 **Layer caching** for faster builds
+
+**Image tags created:**
+```
+ghcr.io/wysselbie/api-demo:b86647b  # Git commit short SHA
+ghcr.io/wysselbie/api-demo:latest   # Latest from main branch
+```
 
 ### 2. **Quality Checks** (`.github/workflows/quality.yml`)
-Comprehensive quality analysis that runs:
-- On every push and pull request to `main` branch
+Comprehensive quality analysis with extended validation.
 
-**Additional Features:**
+**Triggers:** Push and PR to `main` branch
+
+**Features:**
+- 🔄 **Full Project Check** - Runs `make full-check` (install + quality + security-check)
 - 📊 **Coverage Reports** - Generates HTML and Clover XML coverage
-- 📈 **Codecov Integration** - Uploads coverage to Codecov
-- 🔄 **Full Project Check** - Runs complete validation suite
+- 📈 **Codecov Integration** - Uploads coverage to Codecov for tracking
+- 🗄️ **Database Setup** - Creates test database for complete validation
 
 ### 3. **Code Style** (`.github/workflows/code-style.yml`)
 Smart code style enforcement with different behavior for main branch vs PRs:
@@ -54,6 +69,18 @@ make cs-fix        # Fix code style issues
 make security-check # Security audit
 ```
 
+**Build Docker image locally:**
+```bash
+# Get current git SHA
+GIT_SHA=$(git rev-parse --short=7 HEAD)
+
+# Build and tag
+docker build -t ghcr.io/wysselbie/api-demo:$GIT_SHA .
+
+# Test locally
+docker run -p 8080:80 ghcr.io/wysselbie/api-demo:$GIT_SHA
+```
+
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -63,10 +90,11 @@ The workflows use these environment configurations:
 
 ### Caching
 - **Composer dependencies** are cached to speed up builds
-- Cache key based on `composer.lock` hash
+- **Docker layers** are cached using GitHub Actions cache
+- Cache keys based on `composer.lock` hash
 
 ### Database
-- Uses PostgreSQL 15 for testing
+- Uses PostgreSQL 16 for testing
 - Automatically sets up test database and runs migrations
 
 ## 📊 Coverage Reports

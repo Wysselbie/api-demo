@@ -4,10 +4,13 @@ A production-ready Symfony-based REST API application demonstrating modern PHP d
 
 ## Table of Contents
 
+Some links navigate to other files in this repository for better readability.
+
 - [Overview](#overview)
 - [Installation](./docs/installation.md)
 - [Testing](./docs/testing.md)
 - [Deployment](./docs/deployment.md)
+- [GitHub Actions](./.github/README.md)
 - [Architecture & Design Decisions](#architecture--design-decisions)
 - [Project Structure](#project-structure)
 - [API Documentation](#api-documentation)
@@ -23,24 +26,6 @@ This project showcases a professional Symfony API backend with:
 - **CI/CD Pipeline**: Automated testing, Docker image builds, deployment to Render
 - **Production-Ready**: Docker containerization, health checks, structured logging
 - **Infrastructure as Code**: Render deployment configuration in `render.yaml`
-
----
-
-## Installation
-
-See [Installation](./docs/installation.md).
-
----
-
-## Testing
-
-See [Testing](./docs/testing.md).
-
----
-
-## Deployment
-
-See [Deployment](./docs/deployment.md).
 
 ---
 
@@ -177,21 +162,34 @@ api-demo/
 |---------|----------|-------------|
 | `make help` | General | Show all available commands |
 | `make install` | Setup | Install Composer dependencies |
+| **Testing & Quality** | | |
 | `make test` | Quality | Run PHPUnit tests (no coverage) |
 | `make test-coverage` | Quality | Run tests with HTML coverage |
 | `make coverage-report` | Quality | Open coverage report in browser |
 | `make phpstan` | Quality | Run PHPStan static analysis |
+| `make phpstan-baseline` | Quality | Generate PHPStan baseline |
 | `make cs-check` | Quality | Check code style compliance |
 | `make cs-fix` | Quality | Auto-fix code style issues |
 | `make quality` | Quality | Run PHPStan + PHPUnit |
 | `make full-check` | Quality | Complete project validation |
 | `make security-check` | Security | Run Composer security audit |
 | `make validate-schema` | Database | Validate Doctrine schema |
+| **Database** | | |
+| `make db-create` | Database | Create database |
+| `make db-migrate` | Database | Run database migrations |
 | `make db-setup` | Database | Create and migrate database |
 | `make db-reset` | Database | Drop, recreate, migrate database |
 | `make db-test-setup` | Database | Setup isolated test database |
+| `make db-test-reset` | Database | Reset test database with fresh data |
+| **Development** | | |
 | `make serve` | Development | Start PHP development server |
+| `make serve-bg` | Development | Start dev server in background |
+| `make api-docs` | Development | Show API documentation URLs |
+| **Maintenance** | | |
 | `make clean` | Maintenance | Clear cache and temporary files |
+| `make cache-clear` | Maintenance | Clear Symfony cache |
+| `make cache-warmup` | Maintenance | Warm up Symfony cache |
+| `make requirements-check` | Maintenance | Check Symfony requirements |
 
 ---
 
@@ -253,4 +251,4 @@ api-demo/
 
 ## License
 
-This project is open source and available under the MIT License.
+This project is available under the [Forklift Certified License](https://aria.dog/barks/forklift-certified-license/#forklift-certified-license), version 0.69.420, by Aria Salvatrice.

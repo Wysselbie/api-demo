@@ -1,5 +1,7 @@
 # Deployment
 
+This document describes the deployment process for this application.
+
 ## Deployment Pipeline Overview
 
 ```
@@ -19,41 +21,35 @@
                          Manual Step                          Auto-deploys
 ```
 
-## CI/CD Workflow
+## 🚀 Deployment Workflow
 
-The deployment process is orchestrated through **GitHub Actions** with three distinct workflows:
+When you push to `main`:
+1. **Tests run** - PHPUnit, PHPStan, CS Fixer, Security checks
+2. **Docker image builds** - Tagged with git commit SHA
+3. **Image pushed to GHCR** - `ghcr.io/wysselbie/api-demo:<git-sha>`
+4. **Update Render** - Manually update `render.yaml` with the new image tag:
+   ```yaml
+   image:
+     url: ghcr.io/wysselbie/api-demo:b86647b  # Use the git SHA from CI
+   ```
+5. **Deploy** - Commit the updated `render.yaml` to trigger Render deployment
 
-### 1. **CI/CD Pipeline** (`.github/workflows/ci.yml`)
+**Get the latest image tag:**
+```bash
+# From your local commit
+git rev-parse --short=7 HEAD
 
-**Triggers**: Push or PR to `main` branch
+# Or check GitHub Actions output after CI completes
+```
 
-**Jobs**:
-- **test**: Runs PHPStan, PHP CS Fixer, PHPUnit, security audit, schema drift check
-- **security**: Composer security audit
-- **docker-build-push**: *(main branch only)* Builds and pushes Docker image to GHCR
+**Commit and Deploy**
+```bash
+git add render.yaml
+git commit -m "deploy [skip ci]: Update to version $(git rev-parse --short=7 HEAD)"
+git push origin main
 
-**Image Tags**:
-- `ghcr.io/wysselbie/api-demo:latest` (always latest from main)
-- `ghcr.io/wysselbie/api-demo:main` (branch name)
-- `ghcr.io/wysselbie/api-demo:<commit-sha>` (specific version)
-
-### 2. **Quality Checks** (`.github/workflows/quality.yml`)
-
-**Purpose**: Comprehensive quality analysis with coverage reporting
-
-**Features**:
-- Generates HTML and Clover coverage reports
-- Uploads to Codecov for tracking
-- Runs on push and PR
-
-### 3. **Code Style** (`.github/workflows/code-style.yml`)
-
-**Purpose**: Fast feedback on code formatting
-
-**Features**:
-- PHP CS Fixer dry-run
-- Quick lint checks
-- Parallel execution with main CI
+# Render automatically detects changes and deploys
+```
 
 ## Deployment to Render
 
@@ -61,34 +57,6 @@ The deployment process is orchestrated through **GitHub Actions** with three dis
 **Region**: Frankfurt (eu-central)  
 **Database**: Managed PostgreSQL 17  
 **Infrastructure**: Defined in `render.yaml` (Infrastructure as Code)
-
-### Deployment Process
-
-**Step 1: Automated Image Build**
-```bash
-# Triggered automatically on push to main after all tests pass
-# GitHub Actions builds and pushes:
-# - ghcr.io/wysselbie/api-demo:latest
-# - ghcr.io/wysselbie/api-demo:main
-# - ghcr.io/wysselbie/api-demo:<sha>
-```
-
-**Step 2: Update IaC Configuration**
-```bash
-# Edit render.yaml with new image tag
-# Update image URL (use specific SHA for rollback capability)
-image:
-  url: ghcr.io/wysselbie/api-demo:abc123def
-```
-
-**Step 3: Commit and Deploy**
-```bash
-git add render.yaml
-git commit -m "deploy [skip ci]: Update to version abc123def"
-git push origin main
-
-# Render automatically detects changes and deploys
-```
 
 ### Render Configuration
 
@@ -107,10 +75,8 @@ image:
 ```
 
 **Database rollback**:
-```bash
-# If migration issues occur, run down migration
-docker compose exec app php bin/console doctrine:migrations:migrate prev --no-interaction
-```
+
+Currently not supported.
 
 ## Production Checklist
 

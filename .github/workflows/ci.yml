@@ -156,8 +156,7 @@ jobs:
               with:
                   images: ghcr.io/wysselbie/api-demo
                   tags: |
-                      type=ref,event=branch
-                      type=sha
+                      type=sha,prefix=,format=short
                       type=raw,value=latest,enable={{is_default_branch}}
 
             - name: Build and push Docker image

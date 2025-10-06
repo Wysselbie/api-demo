@@ -1,5 +1,5 @@
 # Use API Platform Base Image
-FROM ghcr.io/wysselbie/apiplatform-base:php8.3-1.0.0
+FROM ghcr.io/wysselbie/apiplatform-base:php8.4-1.0.0
 
 # Copy nginx configuration
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
@@ -7,6 +7,10 @@ COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Copy supervisor configuration
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy entrypoint script
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Copy application code
 COPY . /var/www/html
@@ -30,5 +34,5 @@ EXPOSE 80
 
 ENV FPM_LISTEN=/tmp/php-fpm.sock
 
-# Start supervisor (which will manage nginx and php-fpm)
-ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start entrypoint script (runs migrations then supervisord)
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

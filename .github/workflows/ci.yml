@@ -16,7 +16,7 @@ jobs:
 
         services:
             postgres:
-                image: postgres:16
+                image: postgres:17
                 env:
                     POSTGRES_PASSWORD: postgres
                     POSTGRES_DB: api_demo
@@ -55,17 +55,17 @@ jobs:
 
             - name: Reset database
               env:
-                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=17&charset=utf8
               run: make db-reset
 
             - name: Warm up cache for PHPStan
               env:
-                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=17&charset=utf8
               run: php bin/console cache:warmup
 
             - name: Run PHPStan (Static Analysis)
               env:
-                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=17&charset=utf8
               run: make phpstan
 
             - name: Run PHP CS Fixer (Code Style Check)
@@ -73,12 +73,12 @@ jobs:
 
             - name: Create test database
               env:
-                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=17&charset=utf8
               run: make db-test-setup
 
             - name: Run PHPUnit Tests
               env:
-                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=17&charset=utf8
               run: make test
 
             - name: Run Security Check
@@ -87,7 +87,7 @@ jobs:
             - name: Check for Schema Drift
               id: schema-check
               env:
-                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=16&charset=utf8
+                  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/api_demo?serverVersion=17&charset=utf8
               run: |
                   OUTPUT=$(php bin/console doctrine:migrations:diff --no-interaction --quiet 2>&1 || true)
                   echo "output<<EOF" >> $GITHUB_OUTPUT

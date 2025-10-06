@@ -47,10 +47,16 @@ class Event
     #[Assert\Length(max: 255)]
     private ?string $aggregateType = null;
 
+    /**
+     * @var array<string, mixed>
+     */
     #[ORM\Column(type: Types::JSON)]
     #[Assert\NotNull]
     private array $payload = [];
 
+    /**
+     * @var array<string, mixed>|null
+     */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $metadata = null;
 
@@ -107,11 +113,17 @@ class Event
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getPayload(): array
     {
         return $this->payload;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     */
     public function setPayload(array $payload): self
     {
         $this->payload = $payload;
@@ -119,11 +131,17 @@ class Event
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
+    /**
+     * @param array<string, mixed>|null $metadata
+     */
     public function setMetadata(?array $metadata): self
     {
         $this->metadata = $metadata;

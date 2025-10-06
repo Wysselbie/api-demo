@@ -51,19 +51,19 @@ class EventFixtures extends Fixture
                     'currency' => 'EUR',
                     'totalAmount' => 0,
                 ],
-                ['ipAddress' => '192.168.1.' . rand(1, 255), 'userAgent' => 'Mozilla/5.0']
+                ['ipAddress' => '192.168.1.'.rand(1, 255), 'userAgent' => 'Mozilla/5.0']
             );
             $manager->persist($event);
 
             // Add items
-            for ($i = 1; $i <= $orderData['items']; $i++) {
+            for ($i = 1; $i <= $orderData['items']; ++$i) {
                 $event = $this->createEvent(
                     'OrderItemAdded',
                     $orderData['id'],
                     'Order',
                     $version++,
                     [
-                        'itemId' => 'product-' . rand(100, 999),
+                        'itemId' => 'product-'.rand(100, 999),
                         'productName' => $this->getRandomProduct(),
                         'quantity' => rand(1, 3),
                         'unitPrice' => rand(10, 500),
@@ -81,7 +81,7 @@ class EventFixtures extends Fixture
                     'Order',
                     $version++,
                     [
-                        'discountCode' => 'SAVE' . rand(10, 50),
+                        'discountCode' => 'SAVE'.rand(10, 50),
                         'discountType' => 'percentage',
                         'discountValue' => rand(5, 25),
                         'discountAmount' => rand(10, 100),
@@ -100,7 +100,7 @@ class EventFixtures extends Fixture
                     'finalAmount' => rand(50, 2000),
                     'paymentMethod' => ['credit_card', 'paypal', 'bank_transfer'][rand(0, 2)],
                     'shippingAddress' => [
-                        'street' => 'Main St ' . rand(1, 999),
+                        'street' => 'Main St '.rand(1, 999),
                         'city' => ['Berlin', 'Munich', 'Hamburg'][rand(0, 2)],
                         'postalCode' => rand(10000, 99999),
                         'country' => 'DE',
@@ -117,7 +117,7 @@ class EventFixtures extends Fixture
                     'Order',
                     $version++,
                     [
-                        'trackingNumber' => 'DHL' . rand(100000, 999999),
+                        'trackingNumber' => 'DHL'.rand(100000, 999999),
                         'carrier' => 'DHL',
                         'estimatedDelivery' => (new \DateTimeImmutable('+3 days'))->format('Y-m-d'),
                     ]
@@ -160,7 +160,7 @@ class EventFixtures extends Fixture
                     $userData['id'],
                     'User',
                     $version++,
-                    ['verifiedAt' => (new \DateTimeImmutable('-' . rand(1, 30) . ' days'))->format('c')]
+                    ['verifiedAt' => (new \DateTimeImmutable('-'.rand(1, 30).' days'))->format('c')]
                 );
                 $manager->persist($event);
             }
@@ -175,7 +175,7 @@ class EventFixtures extends Fixture
                     [
                         'firstName' => ucfirst($userData['username']),
                         'lastName' => ['Smith', 'Johnson', 'Williams', 'Brown'][rand(0, 3)],
-                        'phoneNumber' => '+49' . rand(1000000000, 9999999999),
+                        'phoneNumber' => '+49'.rand(1000000000, 9999999999),
                     ]
                 );
                 $manager->persist($event);
@@ -188,7 +188,7 @@ class EventFixtures extends Fixture
                     $userData['id'],
                     'User',
                     $version++,
-                    ['changedAt' => (new \DateTimeImmutable('-' . rand(1, 60) . ' days'))->format('c')],
+                    ['changedAt' => (new \DateTimeImmutable('-'.rand(1, 60).' days'))->format('c')],
                     ['reason' => 'user_requested']
                 );
                 $manager->persist($event);
@@ -225,7 +225,7 @@ class EventFixtures extends Fixture
 
             // Multiple stock operations
             $operations = rand(2, 5);
-            for ($i = 0; $i < $operations; $i++) {
+            for ($i = 0; $i < $operations; ++$i) {
                 $operationType = ['StockReserved', 'StockShipped', 'StockReturned'][rand(0, 2)];
 
                 $event = $this->createEvent(
@@ -235,8 +235,8 @@ class EventFixtures extends Fixture
                     $version++,
                     [
                         'quantity' => rand(1, 10),
-                        'reservationId' => 'res-' . rand(1000, 9999),
-                        'orderId' => 'order-' . rand(100000, 999999),
+                        'reservationId' => 'res-'.rand(1000, 9999),
+                        'orderId' => 'order-'.rand(100000, 999999),
                     ]
                 );
                 $manager->persist($event);
@@ -261,20 +261,20 @@ class EventFixtures extends Fixture
                 $cartId,
                 'ShoppingCart',
                 $version++,
-                ['userId' => $userId, 'sessionId' => 'sess-' . rand(10000, 99999)]
+                ['userId' => $userId, 'sessionId' => 'sess-'.rand(10000, 99999)]
             );
             $manager->persist($event);
 
             // Items added
             $itemCount = rand(1, 4);
-            for ($i = 0; $i < $itemCount; $i++) {
+            for ($i = 0; $i < $itemCount; ++$i) {
                 $event = $this->createEvent(
                     'CartItemAdded',
                     $cartId,
                     'ShoppingCart',
                     $version++,
                     [
-                        'productId' => 'product-' . rand(789, 793),
+                        'productId' => 'product-'.rand(789, 793),
                         'productName' => $this->getRandomProduct(),
                         'quantity' => rand(1, 3),
                         'price' => rand(10, 500),
@@ -290,7 +290,7 @@ class EventFixtures extends Fixture
                     $cartId,
                     'ShoppingCart',
                     $version++,
-                    ['reason' => 'timeout', 'abandonedAt' => (new \DateTimeImmutable('-' . rand(1, 7) . ' days'))->format('c')]
+                    ['reason' => 'timeout', 'abandonedAt' => (new \DateTimeImmutable('-'.rand(1, 7).' days'))->format('c')]
                 );
             } else {
                 $event = $this->createEvent(
@@ -298,20 +298,24 @@ class EventFixtures extends Fixture
                     $cartId,
                     'ShoppingCart',
                     $version++,
-                    ['orderId' => 'order-' . rand(100000, 999999)]
+                    ['orderId' => 'order-'.rand(100000, 999999)]
                 );
             }
             $manager->persist($event);
         }
     }
 
+    /**
+     * @param array<string, mixed>      $payload
+     * @param array<string, mixed>|null $metadata
+     */
     private function createEvent(
         string $eventType,
         string $aggregateId,
         string $aggregateType,
         int $version,
         array $payload,
-        ?array $metadata = null
+        ?array $metadata = null,
     ): Event {
         $event = new Event();
         $event->setEventType($eventType);
@@ -320,13 +324,13 @@ class EventFixtures extends Fixture
         $event->setVersion($version);
         $event->setPayload($payload);
 
-        if ($metadata !== null) {
+        if (null !== $metadata) {
             $event->setMetadata($metadata);
         }
 
         // Randomize occurred_at to simulate historical data
         $daysAgo = rand(0, 90);
-        $event->setOccurredAt(new \DateTimeImmutable('-' . $daysAgo . ' days'));
+        $event->setOccurredAt(new \DateTimeImmutable('-'.$daysAgo.' days'));
 
         return $event;
     }

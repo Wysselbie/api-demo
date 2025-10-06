@@ -23,8 +23,7 @@ This project follows a **pragmatic testing approach** balancing coverage with de
 ```
 tests/
 ├── Functional/              # Integration tests (HTTP requests)
-│   ├── ApiHealthCheckTest.php
-│   └── BookApiTest.php
+│   └── ApiHealthCheckTest.php
 ├── Unit/                    # Unit tests (isolated logic)
 └── bootstrap.php            # Test environment setup
 ```
@@ -44,8 +43,8 @@ make coverage-report  # Opens HTML report in browser
 
 **Run specific test:**
 ```bash
-php bin/phpunit tests/Functional/BookApiTest.php
-php bin/phpunit --filter testCreateBook
+php bin/phpunit tests/Functional/ApiHealthCheckTest.php
+php bin/phpunit --filter testHealthCheck
 ```
 
 ## Testing Features

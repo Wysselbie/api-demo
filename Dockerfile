@@ -29,6 +29,8 @@ USER www-data
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+RUN php bin/console assets:install
+
 # Expose port 80
 EXPOSE 80
 
